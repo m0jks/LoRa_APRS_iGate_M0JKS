@@ -154,6 +154,9 @@ namespace POWER_Utils {
             #ifndef HELTEC_WSL_V3
                 digitalWrite(VEXT_CTRL, HIGH);
             #endif
+            #ifdef HELTEC_WP
+                digitalWrite(VEXT_CTRL, LOW);
+            #endif
         #endif
         
         #ifdef ADC_CTRL
