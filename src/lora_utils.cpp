@@ -75,7 +75,7 @@ namespace LoRa_Utils {
             state = radio.setOutputPower(Config.loramodule.power); // max value 20dB for 400M30S as it has Low Noise Amp
             radio.setCurrentLimit(100); // to be validated (80 , 100)?
         #endif
-        #if defined(HELTEC_V3)  || defined(HELTEC_WSL_V3) || defined(HELTEC_WS) || defined(TTGO_T_Beam_V1_0_SX1268) || defined(TTGO_T_Beam_V1_2_SX1262)
+        #if defined(HAS_SX1262)  || defined(TTGO_T_Beam_V1_0_SX1268)
             state = radio.setOutputPower(Config.loramodule.power + 2); // values available: 10, 17, 22 --> if 20 in tracker_conf.json it will be updated to 22.
             radio.setCurrentLimit(140);
         #endif

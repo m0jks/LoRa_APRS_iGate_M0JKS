@@ -16,12 +16,16 @@
             #define lineSpacing     9
         #endif
     #else
-        #include <Adafruit_GFX.h>
-        #include <Adafruit_SSD1306.h>
-        #if defined(HELTEC_V3)
-            #define OLED_DISPLAY_HAS_RST_PIN
-        #endif
-        Adafruit_SSD1306 display(128, 64, &Wire, OLED_RST);
+        #ifdef HAS_EPAPER
+            //
+        #else
+            #include <Adafruit_GFX.h>
+            #include <Adafruit_SSD1306.h>
+            #if defined(HELTEC_V3)
+                #define OLED_DISPLAY_HAS_RST_PIN
+            #endif
+            Adafruit_SSD1306 display(128, 64, &Wire, OLED_RST);
+        #endif    
     #endif
 #endif
 
@@ -48,29 +52,33 @@ void setup_display() {
             }
             tft.setTextFont(0);
             tft.fillScreen(TFT_BLACK);
-        #else    
-            #ifdef OLED_DISPLAY_HAS_RST_PIN
-                pinMode(OLED_RST, OUTPUT);
-                digitalWrite(OLED_RST, LOW);
-                delay(20);
-                digitalWrite(OLED_RST, HIGH);
-            #endif
-            Wire.begin(OLED_SDA, OLED_SCL);
+        #else
+            #ifdef HAS_EPAPER
+                //
+            #else
+                #ifdef OLED_DISPLAY_HAS_RST_PIN
+                    pinMode(OLED_RST, OUTPUT);
+                    digitalWrite(OLED_RST, LOW);
+                    delay(20);
+                    digitalWrite(OLED_RST, HIGH);
+                #endif
+                Wire.begin(OLED_SDA, OLED_SCL);
 
-            if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) { 
-                Serial.println(F("SSD1306 allocation failed"));
-                for(;;); // Don't proceed, loop forever
-            }
-            if (Config.display.turn180) {
-                display.setRotation(2);
-            }
-            display.clearDisplay();
-            display.setTextColor(WHITE);
-            display.setTextSize(1);
-            display.setCursor(0, 0);
-            display.ssd1306_command(SSD1306_SETCONTRAST);
-            display.ssd1306_command(1);
-            display.display();
+                if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) { 
+                    Serial.println(F("SSD1306 allocation failed"));
+                    for(;;); // Don't proceed, loop forever
+                }
+                if (Config.display.turn180) {
+                    display.setRotation(2);
+                }
+                display.clearDisplay();
+                display.setTextColor(WHITE);
+                display.setTextSize(1);
+                display.setCursor(0, 0);
+                display.ssd1306_command(SSD1306_SETCONTRAST);
+                display.ssd1306_command(1);
+                display.display();
+            #endif
         #endif
         delay(1000);
     #endif
@@ -82,13 +90,21 @@ void display_toggle(bool toggle) {
             #ifdef HAS_TFT
                 digitalWrite(TFT_BL, HIGH);
             #else
-                display.ssd1306_command(SSD1306_DISPLAYON);
+                #ifdef HAS_EPAPER
+                //
+                #else
+                    display.ssd1306_command(SSD1306_DISPLAYON);
+                #endif
             #endif
         } else {
             #ifdef HAS_TFT
                 digitalWrite(TFT_BL, LOW);
             #else
-                display.ssd1306_command(SSD1306_DISPLAYOFF);
+                #ifdef HAS_EPAPER
+                //
+                #else
+                    display.ssd1306_command(SSD1306_DISPLAYOFF);
+                #endif
             #endif
         }
     #endif
@@ -139,20 +155,24 @@ void show_display(const String& header, const String& line1, const String& line2
             tft.setCursor(0, ((lineSpacing * 4) - 2));
             tft.print(line3);
         #else
-            display.clearDisplay();
-            display.setTextColor(WHITE);
-            display.setTextSize(1);
-            display.setCursor(0, 0);
-            display.println(header);
-            display.setCursor(0, 8);
-            display.println(line1);
-            display.setCursor(0, 16);
-            display.println(line2);
-            display.setCursor(0, 24);
-            display.println(line3);
-            display.ssd1306_command(SSD1306_SETCONTRAST);
-            display.ssd1306_command(1);
-            display.display();
+            #ifdef HAS_EPAPER
+                //
+            #else
+                display.clearDisplay();
+                display.setTextColor(WHITE);
+                display.setTextSize(1);
+                display.setCursor(0, 0);
+                display.println(header);
+                display.setCursor(0, 8);
+                display.println(line1);
+                display.setCursor(0, 16);
+                display.println(line2);
+                display.setCursor(0, 24);
+                display.println(line3);
+                display.ssd1306_command(SSD1306_SETCONTRAST);
+                display.ssd1306_command(1);
+                display.display();
+            #endif
         #endif
         delay(wait);
     #endif
@@ -182,27 +202,31 @@ void show_display(const String& header, const String& line1, const String& line2
             tft.setCursor(0, ((lineSpacing * 7) - 2));
             tft.print(line6);
         #else
-            display.clearDisplay();
-            display.setTextColor(WHITE);
-            display.setTextSize(2);
-            display.setCursor(0, 0);
-            display.println(header);
-            display.setTextSize(1);
-            display.setCursor(0, 16);
-            display.println(line1);
-            display.setCursor(0, 24);
-            display.println(line2);
-            display.setCursor(0, 32);
-            display.println(line3);
-            display.setCursor(0, 40);
-            display.println(line4);
-            display.setCursor(0, 48);
-            display.println(line5);
-            display.setCursor(0, 56);
-            display.println(line6);
-            display.ssd1306_command(SSD1306_SETCONTRAST);
-            display.ssd1306_command(1);
-            display.display();
+            #ifdef HAS_EPAPER
+                //
+            #else
+                display.clearDisplay();
+                display.setTextColor(WHITE);
+                display.setTextSize(2);
+                display.setCursor(0, 0);
+                display.println(header);
+                display.setTextSize(1);
+                display.setCursor(0, 16);
+                display.println(line1);
+                display.setCursor(0, 24);
+                display.println(line2);
+                display.setCursor(0, 32);
+                display.println(line3);
+                display.setCursor(0, 40);
+                display.println(line4);
+                display.setCursor(0, 48);
+                display.println(line5);
+                display.setCursor(0, 56);
+                display.println(line6);
+                display.ssd1306_command(SSD1306_SETCONTRAST);
+                display.ssd1306_command(1);
+                display.display();
+            #endif
         #endif
         delay(wait);
     #endif
