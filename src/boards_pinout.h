@@ -183,6 +183,12 @@
     #define VEXT_CTRL           45
     #define BOARD_I2C_SDA       37
     #define BOARD_I2C_SCL       36
+    #define EPAPER_BUSY         7
+    #define EPAPER_RST          6
+    #define EPAPER_DC           5
+    #define EPAPER_CS           4
+    #define EPAPER_SCL          3
+    #define EPAPER_SDA          2
 #endif
 
 #ifdef ESP32_C3_DIY_LoRa

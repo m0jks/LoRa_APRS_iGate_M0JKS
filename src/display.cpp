@@ -17,7 +17,11 @@
         #endif
     #else
         #ifdef HAS_EPAPER
-            //
+            #include <GxEPD2_BW.h>
+            #include <GxEPD2_3C.h>
+            #include <Fonts/FreeMonoBold9pt7b.h>
+            #define ENABLE_GxEPD2_GFX 0 // enable or disable GxEPD2_GFX base class
+            GxEPD2_BW<GxEPD2_213_BN, GxEPD2_213_BN::HEIGHT> display(GxEPD2_213_BN(EPAPER_CS, EPAPER_DC, EPAPER_RST, EPAPER_BUSY)); // DEPG0213BN 122x250, SSD1680
         #else
             #include <Adafruit_GFX.h>
             #include <Adafruit_SSD1306.h>
@@ -54,7 +58,7 @@ void setup_display() {
             tft.fillScreen(TFT_BLACK);
         #else
             #ifdef HAS_EPAPER
-                //
+                display.init(115200, true, 50, false);
             #else
                 #ifdef OLED_DISPLAY_HAS_RST_PIN
                     pinMode(OLED_RST, OUTPUT);
@@ -156,7 +160,21 @@ void show_display(const String& header, const String& line1, const String& line2
             tft.print(line3);
         #else
             #ifdef HAS_EPAPER
-                //
+                display.setRotation(1);
+                display.setFont(&FreeMonoBold9pt7b);
+                display.setTextColor(GxEPD_BLACK);
+                int16_t tbx, tby; uint16_t tbw, tbh;
+                display.getTextBounds(header, 0, 0, &tbx, &tby, &tbw, &tbh);
+                uint16_t x = ((display.width() - tbw) / 2) - tbx;   // center bounding box by transposition of origin:
+                uint16_t y = ((display.height() - tbh) / 2) - tby;
+                display.setFullWindow();
+                display.firstPage();
+                do {
+                    display.fillScreen(GxEPD_WHITE);
+                    display.setCursor(x, y);
+                    display.print(header);
+                }
+                while (display.nextPage());
             #else
                 display.clearDisplay();
                 display.setTextColor(WHITE);
@@ -203,7 +221,21 @@ void show_display(const String& header, const String& line1, const String& line2
             tft.print(line6);
         #else
             #ifdef HAS_EPAPER
-                //
+                display.setRotation(1);
+                display.setFont(&FreeMonoBold9pt7b);
+                display.setTextColor(GxEPD_BLACK);
+                int16_t tbx, tby; uint16_t tbw, tbh;
+                display.getTextBounds(header, 0, 0, &tbx, &tby, &tbw, &tbh);
+                uint16_t x = ((display.width() - tbw) / 2) - tbx;   // center bounding box by transposition of origin:
+                uint16_t y = ((display.height() - tbh) / 2) - tby;
+                display.setFullWindow();
+                display.firstPage();
+                do {
+                    display.fillScreen(GxEPD_WHITE);
+                    display.setCursor(x, y);
+                    display.print(header);
+                }
+                while (display.nextPage());
             #else
                 display.clearDisplay();
                 display.setTextColor(WHITE);
