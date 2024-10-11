@@ -41,10 +41,23 @@ bool        statusAfterBoot     = true;
 bool        sendStartTelemetry  = true;
 bool        beaconUpdate        = true;
 uint32_t    lastBeaconTx        = 0;
-uint32_t    lastScreenOn        = millis();
-
 
 namespace Utils {
+
+    static uint32_t lastScreenOn = millis();
+
+    void setLastScreenOn(const String& funcname, bool dbg) { 
+
+      lastScreenOn = millis(); 
+
+      if (dbg == true) { println(String(__func__)  + 
+			       ": In function '" + 
+			       String(funcname)  + 
+			       "' Set to: "      +
+			       String(lastScreenOn)); }
+    }  
+
+    uint32_t getLastScreenOn(void) { return lastScreenOn; }
 
     void processStatus() {
         String status = Config.callsign;
@@ -55,14 +68,14 @@ namespace Utils {
         }
         if (WiFi.status() == WL_CONNECTED && Config.aprs_is.active && Config.beacon.sendViaAPRSIS) {
             delay(1000);
-            status.concat(",qAC:>https://github.com/richonguzman/LoRa_APRS_iGate ");
+            status.concat(",qAC:>https://github.com/m0jks/LoRa_APRS_iGate_M0JKS.git/LoRa_APRS_iGate_M0JKS.git ");
             status.concat(versionDate);
             APRS_IS_Utils::upload(status);
             SYSLOG_Utils::log(2, status, 0, 0.0, 0);   // APRSIS TX
             statusAfterBoot = false;
         }
         if (statusAfterBoot && !Config.beacon.sendViaAPRSIS && Config.beacon.sendViaRF) {
-            status.concat(":>https://github.com/richonguzman/LoRa_APRS_iGate ");
+            status.concat(":>https://github.com/m0jks/LoRa_APRS_iGate_M0JKS.git ");
             status.concat(versionDate);
             STATION_Utils::addToOutputPacketBuffer(status);
             statusAfterBoot = false;
@@ -278,9 +291,11 @@ namespace Utils {
                 seventhLine = "     listening...";
                 STATION_Utils::addToOutputPacketBuffer(secondaryBeaconPacket);
             }
-
+	    
             lastBeaconTx = millis();
-            lastScreenOn = millis();
+
+	    setLastScreenOn(__func__, false);
+
             beaconUpdate = false;
         }
 
@@ -289,8 +304,22 @@ namespace Utils {
         }
     }
 
+  //uint8_t  cnt = 0;
+
     void checkDisplayInterval() {
-        uint32_t lastDisplayTime = millis() - lastScreenOn;
+      //uint32_t lastDisplayTime = millis() - lastScreenOn;
+      uint32_t lastDisplayTime = millis() - getLastScreenOn();
+
+      /* Utils::print("checkDisplayInterval " + 
+	 String(cnt++) + 
+	 ":" +
+	 String(lastDisplayTime) + 
+	 ":" +
+	 String(millis())+
+	 ":" +
+	 String(getLastScreenOn())+
+	 "\r\n"); */
+
         if (!Config.display.alwaysOn && lastDisplayTime >= Config.display.timeout * 1000) {
             displayToggle(false);
         }
