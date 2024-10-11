@@ -11,7 +11,6 @@
 #include "utils.h"
 
 extern Configuration    Config;
-extern uint32_t         lastScreenOn;
 extern String           iGateBeaconPacket;
 extern String           firstLine;
 extern String           secondLine;
@@ -155,7 +154,7 @@ namespace DIGI_Utils {
                                     STATION_Utils::addToOutputPacketBuffer(loraPacket);
                                 }
                                 displayToggle(true);
-                                lastScreenOn = millis();
+                                Utils::setLastScreenOn(__func__,false);
                             }
                         }
                     }
