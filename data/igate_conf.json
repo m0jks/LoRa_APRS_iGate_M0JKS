@@ -1,5 +1,5 @@
 {
-    "callsign": "2E0GHJ-9",
+    "callsign": "2E0GHJ-7",
     "wifi": {
         "autoAP": {
             "active": false,
@@ -11,8 +11,8 @@
     "beacon": {
         "latitude": 53.13726,
         "longitude": -1.65158,
-        "comment": "Test LoRa APRS #9",
-        "interval": 1,
+        "comment": "Test LoRa APRS",
+        "interval": 30,
         "overlay": "L",
         "symbol": "#",
         "path": "WIDE1-1",
@@ -29,7 +29,7 @@
         "objectsToRF": false
     },
     "digi": {
-        "mode": 1
+        "mode": 2
     },
     "lora": {
         "txFreq": 439912500,
@@ -43,8 +43,8 @@
     },
     "display": {
         "alwaysOn": false,
-        "timeout": 4,
-        "turn180": false
+        "timeout": 5,
+        "turn180": true
     },
     "battery": {
         "sendInternalVoltage": true,
