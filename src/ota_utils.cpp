@@ -4,9 +4,9 @@
 #include "configuration.h"
 #include "ota_utils.h"
 #include "display.h"
+#include "utils.h"
 
 extern Configuration        Config;
-extern uint32_t             lastScreenOn;
 extern bool                 isUpdatingOTA;
 
 unsigned long ota_progress_millis = 0;
@@ -30,7 +30,7 @@ namespace OTA_Utils {
     void onOTAStart() {
         Serial.println("OTA update started!");
         displayToggle(true);
-        lastScreenOn = millis();
+        Utils::setLastScreenOn(__func__,false);
         displayShow("", "", "", " OTA update started!", "", "", "", 1000);
         isUpdatingOTA = true;
     }
@@ -38,7 +38,7 @@ namespace OTA_Utils {
     void onOTAProgress(size_t current, size_t final) {
         if (millis() - ota_progress_millis > 1000) {
             displayToggle(true);
-            lastScreenOn = millis();
+            Utils::setLastScreenOn(__func__,false);
             ota_progress_millis = millis();
             Serial.printf("OTA Progress Current: %u bytes, Final: %u bytes\n", current, final);
             displayShow("", "", "  OTA Progress : " + String((current*100)/final) + "%", "", "", "", "", 100);
@@ -47,7 +47,7 @@ namespace OTA_Utils {
 
     void onOTAEnd(bool success) {
         displayToggle(true);
-        lastScreenOn = millis();
+        Utils::setLastScreenOn(__func__,false);
         if (success) {
             Serial.println("OTA update finished successfully!");
             displayShow("", "", " OTA update success!", "", "    Rebooting ...", "", "", 4000);
