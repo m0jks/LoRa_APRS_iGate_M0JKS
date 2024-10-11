@@ -39,7 +39,7 @@ ________________________________________________________________________________
     #include "A7670_utils.h"
 #endif
 
-String          versionDate             = "2024.10.07";
+String          versionDate             = "08/10/2024 (m0jks)";
 Configuration   Config;
 WiFiClient      espClient;
 
@@ -121,6 +121,9 @@ void setup() {
         A7670_Utils::setup();
     #endif
     Utils::checkRebootMode();
+
+    // Set initial timestamp otherwise ....
+    if (!Config.display.alwaysOn) { Utils::setLastScreenOn(__func__,false); };
 }
 
 void loop() {
@@ -158,6 +161,10 @@ void loop() {
     }
 
     if (packet != "") {
+
+#ifdef INTERNAL_LED_RX_PIN
+      digitalWrite(INTERNAL_LED_RX_PIN, HIGH);
+#endif
         if (Config.aprs_is.active) { // If APRSIS enabled
             APRS_IS_Utils::processLoRaPacket(packet); // Send received packet to APRSIS
         }
@@ -173,6 +180,13 @@ void loop() {
         if (Config.tnc.enableSerial) { // If Serial KISS enabled
             TNC_Utils::sendToSerial(packet); // Send received packet to Serial KISS
         }
+
+#ifdef INTERNAL_LED_RX_PIN
+	esp_sleep_enable_timer_wakeup(400000);
+        esp_light_sleep_start();
+	digitalWrite(INTERNAL_LED_RX_PIN, LOW);
+#endif
+		    
     }
 
     if (Config.aprs_is.active) { // If APRSIS enabled
@@ -184,10 +198,23 @@ void loop() {
     displayShow(firstLine, secondLine, thirdLine, fourthLine, fifthLine, sixthLine, seventhLine, 0);
     Utils::checkRebootTime();
     Utils::checkSleepByLowBatteryVoltage(1);
-
-    if (Config.wifiAutoAP.active == false) {
-        Serial.flush();
-        esp_sleep_enable_timer_wakeup(1000000);
-        esp_light_sleep_start();
-    }
+    
+#ifdef INTERNAL_LED_HB_PIN
+    digitalWrite(INTERNAL_LED_HB_PIN, LOW);
+#endif
+    // There is absolutely no need to run the ESP32 flat out when in digi mode - when the WiFi AP is disabed. 
+    // As Rick M5RJC has changed in his repos, we can put the ESP32 in to light sleep mode 
+    // for most of the time. The SX1262 buffers incoming packets so to save power, we 
+    // can reduce the poll rate to once a second (from once every 26mS). An future improvment
+    // would be to enable interrupts on the SX1262 and use esp_sleep_enable_gpio_wakeup. This is 
+     // one for the future as the above tweak is more than adequate and requirtes minimum changes.
+    //
+    if (Config.digi.mode && Config.wifiAutoAP.active == false) {
+      Serial.flush();
+      esp_sleep_enable_timer_wakeup(1000000);
+      esp_light_sleep_start();
+    } 
+#ifdef INTERNAL_LED_HB_PIN
+    digitalWrite(INTERNAL_LED_HB_PIN, HIGH);
+#endif
 }
