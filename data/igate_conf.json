@@ -1,5 +1,5 @@
 {
-    "callsign": "2E0GHJ-7",
+    "callsign": "NOCALL-10",
     "wifi": {
         "autoAP": {
             "active": false,
@@ -9,9 +9,9 @@
         "AP": []
     },
     "beacon": {
-        "latitude": 53.13726,
-        "longitude": -1.65158,
-        "comment": "Test LoRa APRS",
+        "latitude": 0.0,
+        "longitude": -0.0,
+        "comment": "LoRa APRS [M0JKS repos fork]",
         "interval": 30,
         "overlay": "L",
         "symbol": "#",
