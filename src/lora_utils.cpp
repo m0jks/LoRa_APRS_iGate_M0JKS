@@ -116,10 +116,13 @@ namespace LoRa_Utils {
         if (Config.loramodule.txFreq != Config.loramodule.rxFreq) {
             changeFreqTx();
         }
-
-        #ifdef INTERNAL_LED_PIN
-            digitalWrite(INTERNAL_LED_PIN, HIGH);
-        #endif
+#ifdef INTERNAL_LED_TX_PIN
+	digitalWrite(INTERNAL_LED_TX_PIN, HIGH);
+#else 
+#ifdef INTERNAL_LED_PIN
+	digitalWrite(INTERNAL_LED_PIN, HIGH);
+#endif
+#endif
         int state = radio.transmit("\x3c\xff\x01" + newPacket);
         transmitFlag = true;
         if (state == RADIOLIB_ERR_NONE) {
@@ -132,9 +135,14 @@ namespace LoRa_Utils {
             Utils::print(F("failed, code "));
             Utils::println(String(state));
         }
-        #ifdef INTERNAL_LED_PIN
-            digitalWrite(INTERNAL_LED_PIN, LOW);
-        #endif
+
+#ifdef INTERNAL_LED_TX_PIN
+	digitalWrite(INTERNAL_LED_TX_PIN, LOW);
+#else
+#ifdef INTERNAL_LED_PIN
+	digitalWrite(INTERNAL_LED_PIN, LOW);
+#endif
+#endif
         if (Config.loramodule.txFreq != Config.loramodule.rxFreq) {
             changeFreqRx();
         }
@@ -167,8 +175,8 @@ namespace LoRa_Utils {
                 transmitFlag = false;
             } else {
                 int state = radio.readData(packet);
-                if (state == RADIOLIB_ERR_NONE) {
-                    if (packet != "") {
+                if (state == RADIOLIB_ERR_NONE) {  
+		  if (packet != "") {
                         rssi        = radio.getRSSI();
                         snr         = radio.getSNR();
                         freqError   = radio.getFrequencyError();
@@ -191,6 +199,7 @@ namespace LoRa_Utils {
                             SYSLOG_Utils::log(1, packet, rssi, snr, freqError); // RX
                         }
                         lastRxTime = millis();
+
                         return packet;
                     }                
                 } else if (state == RADIOLIB_ERR_CRC_MISMATCH) {
