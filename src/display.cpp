@@ -86,6 +86,9 @@ void displaySetup() {
         delay(1000);
     #endif
 }
+//#include "utils.h"
+
+//uint32_t  displayToggleCnt = 0;
 
 void displayToggle(bool toggle) {
     #ifdef HAS_DISPLAY
@@ -95,8 +98,9 @@ void displayToggle(bool toggle) {
             #else
                 #if HAS_EPAPER
                     // ... to be continued
-                #else
-                    display.ssd1306_command(SSD1306_DISPLAYON);
+                #else  
+		//Utils::println(String(__func__) +": Turning Display ON: " + String( displayToggleCnt++)); 
+		display.ssd1306_command(SSD1306_DISPLAYON);
                 #endif
             #endif
         } else {
@@ -106,7 +110,8 @@ void displayToggle(bool toggle) {
                 #if HAS_EPAPER
                     // ... to be continued
                 #else
-                    display.ssd1306_command(SSD1306_DISPLAYOFF);
+		//Utils::println(String(__func__) + ": Turning Display OFF: "+ String( displayToggleCnt++)); 
+		display.ssd1306_command(SSD1306_DISPLAYOFF);
                 #endif
             #endif
         }
