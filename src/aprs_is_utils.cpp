@@ -11,7 +11,6 @@
 
 extern Configuration        Config;
 extern WiFiClient           espClient;
-extern uint32_t             lastScreenOn;
 extern String               firstLine;
 extern String               secondLine;
 extern String               thirdLine;
@@ -76,10 +75,10 @@ namespace APRS_IS_Utils {
             } else {
                 wifiState = "AP";
             }            
-            if (!Config.display.alwaysOn && Config.display.timeout != 0) {
-                displayToggle(true);
-            }
-            lastScreenOn = millis();
+            //if (!Config.display.alwaysOn && Config.display.timeout != 0) {
+	    //  displayToggle(true);
+            //}
+	    //Utils::setLastScreenOn(__func__,false); 
         }
 
         if (!Config.aprs_is.active) {
@@ -100,7 +99,7 @@ namespace APRS_IS_Utils {
             #endif
             if(aprsisState == "--" && !Config.display.alwaysOn && Config.display.timeout != 0) {
                 displayToggle(true);
-                lastScreenOn = millis();
+                Utils::setLastScreenOn(__func__,false); 
             }            
         }
         secondLine = "WiFi: ";
@@ -163,7 +162,7 @@ namespace APRS_IS_Utils {
                 displayToggle(true);
             }
             STATION_Utils::addToOutputPacketBuffer(QUERY_Utils::process(receivedMessage, sender, false, thirdParty));
-            lastScreenOn = millis();
+            Utils::setLastScreenOn(__func__,false);
             displayShow(firstLine, secondLine, thirdLine, fourthLine, fifthLine, "Callsign = " + sender, "TYPE --> QUERY", 0);
             return true;
         }
@@ -194,7 +193,7 @@ namespace APRS_IS_Utils {
                                 if (!Config.display.alwaysOn && Config.display.timeout != 0) {
                                     displayToggle(true);
                                 }
-                                lastScreenOn = millis();
+                                Utils::setLastScreenOn(__func__,false);
                                 #ifdef HAS_A7670
                                     stationBeacon = true;
                                     A7670_Utils::uploadToAPRSIS(aprsPacket);
@@ -296,7 +295,7 @@ namespace APRS_IS_Utils {
                         if (!Config.display.alwaysOn && Config.display.timeout != 0) {
                             displayToggle(true);
                         }
-                        lastScreenOn = millis();
+                        Utils::setLastScreenOn(__func__,false);
                         delay(500);
                         #ifdef HAS_A7670
                             A7670_Utils::uploadToAPRSIS(queryAnswer);
@@ -319,7 +318,7 @@ namespace APRS_IS_Utils {
                     if (STATION_Utils::wasHeard(Addressee)) {
                         STATION_Utils::addToOutputPacketBuffer(buildPacketToTx(packet, 1));
                         displayToggle(true);
-                        lastScreenOn = millis();
+                        Utils::setLastScreenOn(__func__,false);
                         Utils::typeOfPacket(packet, 1); // APRS-LoRa
                     }
                 }
@@ -328,7 +327,7 @@ namespace APRS_IS_Utils {
                 Utils::println("Received Object from APRS-IS  : " + packet);
                 STATION_Utils::addToOutputPacketBuffer(buildPacketToTx(packet, 5));
                 displayToggle(true);
-                lastScreenOn = millis();
+                Utils::setLastScreenOn(__func__,false);
                 Utils::typeOfPacket(packet, 1); // APRS-LoRa
             }
         }
