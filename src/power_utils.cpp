@@ -144,7 +144,15 @@ namespace POWER_Utils {
         #ifdef INTERNAL_LED_PIN
             pinMode(INTERNAL_LED_PIN, OUTPUT);
         #endif
-
+        #ifdef INTERNAL_LED_TX_PIN
+            pinMode(INTERNAL_LED_TX_PIN, OUTPUT);
+        #endif
+        #ifdef INTERNAL_LED_RX_PIN
+            pinMode(INTERNAL_LED_RX_PIN, OUTPUT);
+        #endif
+        #ifdef INTERNAL_LED_HB_PIN
+            pinMode(INTERNAL_LED_HB_PIN, OUTPUT);
+        #endif
         if (Config.battery.sendExternalVoltage || Config.battery.monitorExternalVoltage) {
             pinMode(Config.battery.externalVoltagePin, INPUT);
         }
