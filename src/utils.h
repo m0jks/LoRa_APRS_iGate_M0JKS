@@ -12,22 +12,24 @@ public:
 };
 
 namespace Utils {
+  
+    void      processStatus();
+    String   getLocalIP();
+    void     setupDisplay();
+    void     activeStations();
+    void     checkBeaconInterval();
+    void     checkDisplayInterval();
+    void     validateFreqs();
+    void     typeOfPacket(const String& packet, const uint8_t packetType);
+    void     print(const String& text);
+    void     println(const String& text);
+    void     checkRebootMode();
+    void     checkRebootTime();
+    void     checkSleepByLowBatteryVoltage(uint8_t mode);
+    bool     checkValidCallsign(const String& callsign);
 
-    void    processStatus();
-    String  getLocalIP();
-    void    setupDisplay();
-    void    activeStations();
-    void    checkBeaconInterval();
-    void    checkDisplayInterval();
-    void    validateFreqs();
-    void    typeOfPacket(const String& packet, const uint8_t packetType);
-    void    print(const String& text);
-    void    println(const String& text);
-    void    checkRebootMode();
-    void    checkRebootTime();
-    void    checkSleepByLowBatteryVoltage(uint8_t mode);
-    bool    checkValidCallsign(const String& callsign);
-
+    void     setLastScreenOn(const String& funcname, bool dbg);
+    uint32_t getLastScreenOn(void);
 }
 
 #endif
