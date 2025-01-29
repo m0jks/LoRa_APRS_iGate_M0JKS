@@ -44,7 +44,14 @@ uint32_t    lastBeaconTx        = 0;
 
 namespace Utils {
 
-    static uint32_t lastScreenOn = millis();
+  static struct _currents extCurrent = { 0.0, 0.0 };
+  
+  void  setExtBatteryCurrent(float current) { extCurrent.battery = current; }
+  void  setExtSolarCurrent(float current)   { extCurrent.solar = current; }
+  float getExtBatteryCurrent(void)          { return extCurrent.battery; }
+  float getExtSolarCurrent(void)            { return extCurrent.solar; }
+
+   static uint32_t lastScreenOn = millis();
 
     void setLastScreenOn(const String& funcname, bool dbg) { 
 
@@ -188,9 +195,10 @@ namespace Utils {
     }            
 
 
-    void checkBeaconInterval() {
+    void checkBeaconInterval(bool force) {
         uint32_t lastTx = millis() - lastBeaconTx;
-        if (lastBeaconTx == 0 || lastTx >= Config.beacon.interval * 60 * 1000) {
+
+        if (lastBeaconTx == 0 || lastTx >= Config.beacon.interval * 60 * 1000 || force) {
             beaconUpdate = true;    
         }
 
@@ -244,6 +252,22 @@ namespace Utils {
                 }
             #endif
 
+#if defined(EXTERNAL_BATTERY_ADC_PIN) || defined(EXTERNAL_SOLAR_ADC_PIN)
+		beaconPacket               += " ["; 		
+#ifdef EXTERNAL_BATTERY_ADC_PIN
+		beaconPacket               += " "; 
+		beaconPacket               += String(getExtBatteryCurrent(),2) + "mA";
+		secondaryBeaconPacket      += " "; 
+		secondaryBeaconPacket      += String(getExtBatteryCurrent(),2) + "mA";	
+#endif
+#ifdef EXTERNAL_SOLAR_ADC_PIN
+		beaconPacket          += " "; 
+		beaconPacket          += String(getExtSolarCurrent(),2) + "mA";
+		secondaryBeaconPacket += " ";
+		secondaryBeaconPacket += String(getExtSolarCurrent(),2) + "mA"; 	
+#endif
+		beaconPacket               += "]"; 		
+#endif
             #ifndef HELTEC_WP
                 if (Config.battery.sendExternalVoltage || Config.battery.monitorExternalVoltage) {
                     float externalVoltage       = BATTERY_Utils::checkExternalVoltage();

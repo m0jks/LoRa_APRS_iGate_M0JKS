@@ -153,6 +153,22 @@ namespace POWER_Utils {
         #ifdef INTERNAL_LED_HB_PIN
             pinMode(INTERNAL_LED_HB_PIN, OUTPUT);
         #endif
+        #ifdef EXTERNAL_SWITCH_SW2
+	    pinMode(EXTERNAL_SWITCH_SW2, INPUT);
+	#endif
+        #ifdef EXTERNAL_SWITCH_SW3  
+	    pinMode(EXTERNAL_SWITCH_SW3, INPUT);
+	#endif
+        #ifdef EXTERNAL_SWITCH_SW4  
+	    pinMode(EXTERNAL_SWITCH_SW4, INPUT);
+	#endif
+        #ifdef EXTERNAL_SOLAR_ADC_PIN 
+            pinMode(EXTERNAL_SOLAR_ADC_PIN , INPUT);
+        #endif
+        #ifdef EXTERNAL_BATTERY_ADC_PIN 
+            pinMode(EXTERNAL_BATTERY_ADC_PIN , INPUT);
+        #endif
+
         if (Config.battery.sendExternalVoltage || Config.battery.monitorExternalVoltage) {
             pinMode(Config.battery.externalVoltagePin, INPUT);
         }

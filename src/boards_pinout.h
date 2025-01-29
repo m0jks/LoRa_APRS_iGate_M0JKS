@@ -199,10 +199,17 @@
     #endif
 #endif
 
-#if defined(HELTEC_V3_M0JKS)
+#if defined(HELTEC_V3_M0JKS_PBA0058) || defined(HELTEC_V3_M0JKS_PBA0060)
     #define INTERNAL_LED_HB_PIN    47
     #define INTERNAL_LED_TX_PIN    46
     #define INTERNAL_LED_RX_PIN    45
+#endif
+#if defined(HELTEC_V3_M0JKS_PBA0060)
+//    #define EXTERNAL_SWITCH_SW2    6
+//    #define EXTERNAL_SWITCH_SW3    7
+    #define EXTERNAL_SWITCH_SW4      5
+    #define EXTERNAL_BATTERY_ADC_PIN 2    
+    #define EXTERNAL_SOLAR_ADC_PIN   3
 #endif
 
 #if defined(ESP32_DIY_LoRa) || defined(ESP32_DIY_LoRa_915) || defined(ESP32_DIY_1W_LoRa) || defined(ESP32_DIY_1W_LoRa_915)

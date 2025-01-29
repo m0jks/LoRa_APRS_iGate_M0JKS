@@ -9,6 +9,8 @@ namespace BATTERY_Utils {
     void    adcCalibration();
     void    adcCalibrationCheck();
     void    setup();
+    float   rdExtBatteryCurrent_mA();
+    float   rdExtSolarCurrent_mA();
     float   checkInternalVoltage();
     float   checkExternalVoltage();
     void    checkIfShouldSleep(); // ????
@@ -16,7 +18,6 @@ namespace BATTERY_Utils {
 
     String  generateEncodedTelemetryBytes(float value, bool firstBytes, byte voltageType);
     String  generateEncodedTelemetry();
-
 }
 
 #endif

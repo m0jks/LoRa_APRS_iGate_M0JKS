@@ -11,13 +11,18 @@ public:
     float   SNR;
 };
 
+struct _currents {
+  float battery;
+  float solar;
+};
+
 namespace Utils {
   
     void      processStatus();
     String   getLocalIP();
     void     setupDisplay();
     void     activeStations();
-    void     checkBeaconInterval();
+    void     checkBeaconInterval(bool force);
     void     checkDisplayInterval();
     void     validateFreqs();
     void     typeOfPacket(const String& packet, const uint8_t packetType);
@@ -30,6 +35,10 @@ namespace Utils {
 
     void     setLastScreenOn(const String& funcname, bool dbg);
     uint32_t getLastScreenOn(void);
+    
+    void  setExtBatteryCurrent(float current); 
+    void  setExtSolarCurrent(float current);     
+    float getExtBatteryCurrent(void);
+    float getExtSolarCurrent(void);          
 }
-
 #endif

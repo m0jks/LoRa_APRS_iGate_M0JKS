@@ -126,7 +126,10 @@ void setup() {
     if (!Config.display.alwaysOn) { Utils::setLastScreenOn(__func__,false); };
 }
 
+static bool toggle = true;
+
 void loop() {
+ 
     WIFI_Utils::checkAutoAPTimeout();
 
     if (isUpdatingOTA) {
@@ -150,9 +153,19 @@ void loop() {
 
     TNC_Utils::loop();
 
+#ifdef EXTERNAL_SOLAR_ADC_PIN
+      if (toggle) { Utils::setExtSolarCurrent(BATTERY_Utils::rdExtSolarCurrent_mA());}
+#endif
+#ifdef EXTERNAL_BATTERY_ADC_PIN
+    if (!toggle) { Utils::setExtBatteryCurrent(BATTERY_Utils::rdExtBatteryCurrent_mA()); }
+#endif
+   
     Utils::checkDisplayInterval();
-    Utils::checkBeaconInterval();
-    
+#ifdef EXTERNAL_SWITCH_SW4
+    Utils::checkBeaconInterval((digitalRead(EXTERNAL_SWITCH_SW4) == HIGH));
+#else
+    Utils::checkBeaconInterval(false);
+#endif    
     APRS_IS_Utils::checkStatus(); // Need that to update display, maybe split this and send APRSIS status to display func?
 
     String packet = "";
@@ -161,7 +174,6 @@ void loop() {
     }
 
     if (packet != "") {
-
 #ifdef INTERNAL_LED_RX_PIN
       digitalWrite(INTERNAL_LED_RX_PIN, HIGH);
 #endif
@@ -207,7 +219,7 @@ void loop() {
     // for most of the time. The SX1262 buffers incoming packets so to save power, we 
     // can reduce the poll rate to once a second (from once every 26mS). An future improvment
     // would be to enable interrupts on the SX1262 and use esp_sleep_enable_gpio_wakeup. This is 
-     // one for the future as the above tweak is more than adequate and requirtes minimum changes.
+    // one for the future as the above tweak is more than adequate and requirtes minimum changes.
     //
     if (Config.digi.mode && Config.wifiAutoAP.active == false) {
       Serial.flush();
@@ -217,4 +229,6 @@ void loop() {
 #ifdef INTERNAL_LED_HB_PIN
     digitalWrite(INTERNAL_LED_HB_PIN, HIGH);
 #endif
+
+ toggle = !toggle;
 }

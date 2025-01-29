@@ -10,7 +10,9 @@ extern  uint32_t                        lastBatteryCheck;
 
 bool    shouldSleepLowVoltage           = false;
 
-float   adcReadingTransformation        = (3.3/4095);
+#define ADCWIDTHBITS 12
+float   adcReadingTransformation        = (3.3/(1<<ADCWIDTHBITS));
+int     currentAmpGain                  = 50;
 float   voltageDividerCorrection        = 0.288;
 float   readingCorrection               = 0.125;
 float   multiplyCorrection              = 0.035;
@@ -19,6 +21,7 @@ float   voltageDividerTransformation    = 0.0;
 
 int     telemetryCounter                = random(1,999);
 
+#define A2mA(_x) * 1000
 
 #ifdef HAS_ADC_CALIBRATION
     #include <esp_adc_cal.h>
@@ -89,6 +92,36 @@ namespace BATTERY_Utils {
             }
         #endif
     }
+  
+#if defined(EXTERNAL_BATTERY_ADC_PIN) || defined(EXTERNAL_SOLAR_ADC_PIN)
+  //using namespace Utils;
+  namespace {
+ 
+    float rdExtCurrent_mA(int extAdcPin, String extAdcName, bool dbg) { 
+
+      uint extAdcPinVal = analogRead(extAdcPin); 
+      
+      float extCurrent_mA = adcReadingTransformation * extAdcPinVal / currentAmpGain * 1e3;
+      
+      if (dbg == true) {
+	Utils::print(extAdcName); 
+	Utils::print(": Pin -> "); 
+	Utils::print(String(extAdcPinVal));
+	Utils::print(", "); 
+	Utils::print("Current -> "); 
+	Utils::println(String(extCurrent_mA,2)); }	
+      
+      return extCurrent_mA;
+    }
+  }
+#endif
+  
+#ifdef EXTERNAL_BATTERY_ADC_PIN
+  float rdExtBatteryCurrent_mA(void) { return rdExtCurrent_mA(EXTERNAL_BATTERY_ADC_PIN, "Battery",  false);}
+#endif
+#ifdef EXTERNAL_SOLAR_ADC_PIN
+  float rdExtSolarCurrent_mA(void) { return rdExtCurrent_mA(EXTERNAL_SOLAR_ADC_PIN, "Solar", false);}
+#endif
 
     float checkInternalVoltage() { 
         #if defined(HAS_AXP192) || defined(HAS_AXP2101)
@@ -266,3 +299,6 @@ namespace BATTERY_Utils {
     }
 
 }
+
+
+

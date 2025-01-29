@@ -1,5 +1,5 @@
 {
-    "callsign": "M0JKS-3",
+    "callsign": "M0JKS-2",
     "wifi": {
         "autoAP": {
             "active": false,
@@ -11,7 +11,7 @@
     "beacon": {
         "latitude": 53.13726,
         "longitude": -1.65158,
-        "comment": "Stanton Moor Test LoRa MPPT digi PBA0063 #3",
+        "comment": "Stanton Moor Test LoRa MPPT digi PBA0063",
         "interval": 30,
         "overlay": "L",
         "symbol": "#",
