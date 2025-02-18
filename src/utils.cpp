@@ -193,9 +193,29 @@ namespace Utils {
         }
         sendStartTelemetry = false;
     }            
+  
+#if defined(EXTERNAL_BATTERY_ADC_PIN) || defined(EXTERNAL_SOLAR_ADC_PIN)
+  void appendBeaconPacketAdcInfo(String *beaconPacket, String *secondaryBeaconPacket) {	
+    *beaconPacket += " [";*secondaryBeaconPacket += " [";
+#ifdef EXTERNAL_BATTERY_ADC_PIN
+    *beaconPacket += " "; 
+    *beaconPacket += String(getExtBatteryCurrent(),2) + "mA";
+    *secondaryBeaconPacket += " "; 
+    *secondaryBeaconPacket += String(getExtBatteryCurrent(),2) + "mA";	
+#endif
+#ifdef EXTERNAL_SOLAR_ADC_PIN
+    *beaconPacket += " "; 
+    *beaconPacket += String(getExtSolarCurrent(),2) + "mA";
+    *secondaryBeaconPacket += " "; 
+    *secondaryBeaconPacket += String(getExtSolarCurrent(),2) + "mA"; 	
+#endif
+*beaconPacket += "]";*secondaryBeaconPacket += "]";
+		
+  }
+#endif
 
+  void checkBeaconInterval(bool force) {
 
-    void checkBeaconInterval(bool force) {
         uint32_t lastTx = millis() - lastBeaconTx;
 
         if (lastBeaconTx == 0 || lastTx >= Config.beacon.interval * 60 * 1000 || force) {
@@ -232,9 +252,9 @@ namespace Utils {
                 if (Config.battery.sendInternalVoltage || Config.battery.monitorInternalVoltage) {
                     float internalVoltage       = BATTERY_Utils::checkInternalVoltage();
                     if (Config.battery.monitorInternalVoltage && internalVoltage < Config.battery.internalSleepVoltage) {
-                        beaconPacket            += " **IntBatWarning:SLEEP**";
-                        secondaryBeaconPacket   += " **IntBatWarning:SLEEP**";
-                        shouldSleepLowVoltage   = true;
+		      beaconPacket            += " **IntBatWarning:SLEEP**";
+		      secondaryBeaconPacket   += " **IntBatWarning:SLEEP**";
+		      shouldSleepLowVoltage   = true;
                     }
 
                     String internalVoltageInfo  = String(internalVoltage,2) + "V";
@@ -251,22 +271,8 @@ namespace Utils {
                     }      
                 }
             #endif
-
 #if defined(EXTERNAL_BATTERY_ADC_PIN) || defined(EXTERNAL_SOLAR_ADC_PIN)
-		beaconPacket               += " ["; 		
-#ifdef EXTERNAL_BATTERY_ADC_PIN
-		beaconPacket               += " "; 
-		beaconPacket               += String(getExtBatteryCurrent(),2) + "mA";
-		secondaryBeaconPacket      += " "; 
-		secondaryBeaconPacket      += String(getExtBatteryCurrent(),2) + "mA";	
-#endif
-#ifdef EXTERNAL_SOLAR_ADC_PIN
-		beaconPacket          += " "; 
-		beaconPacket          += String(getExtSolarCurrent(),2) + "mA";
-		secondaryBeaconPacket += " ";
-		secondaryBeaconPacket += String(getExtSolarCurrent(),2) + "mA"; 	
-#endif
-		beaconPacket               += "]"; 		
+		appendBeaconPacketAdcInfo(&beaconPacket, &secondaryBeaconPacket);
 #endif
             #ifndef HELTEC_WP
                 if (Config.battery.sendExternalVoltage || Config.battery.monitorExternalVoltage) {
@@ -449,14 +455,14 @@ namespace Utils {
             }
         }
     }
-
-    void checkSleepByLowBatteryVoltage(uint8_t mode) {
-        if (shouldSleepLowVoltage) {
-            if (mode == 0) {    // at startup
-                delay(3000);
-            }
-            Serial.println("\n\n*** Sleeping Low Battey Voltage ***\n\n");
-            esp_sleep_enable_timer_wakeup(30 * 60 * 1000000); // sleep 30 min
+  
+  void checkSleepByLowBatteryVoltage(uint8_t mode) {
+    if (shouldSleepLowVoltage) {
+      if (mode == 0) {    // at startup
+	delay(3000);
+      }
+      Serial.println("\n\n*** Sleeping Low Battey Voltage ***\n\n");
+      esp_sleep_enable_timer_wakeup(30 * 60 * 1000000); // sleep 30 min
             if (mode == 1) {    // low voltage detected after a while
                 displayToggle(false);
             }
@@ -465,12 +471,14 @@ namespace Utils {
                     digitalWrite(VEXT_CTRL, LOW);
                 #endif
             #endif
+ 
+	    // Shutdown radio and ESP32
             LoRa_Utils::sleepRadio();
             transmitFlag = true;
             delay(100);
             esp_deep_sleep_start();
         }
-    }
+  }
 
     bool checkValidCallsign(const String& callsign) {
         if (callsign == "WLNK-1") return true;
@@ -514,5 +522,4 @@ namespace Utils {
         }
         return true;
     }
-
 }
