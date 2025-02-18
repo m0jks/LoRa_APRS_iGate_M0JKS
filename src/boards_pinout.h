@@ -205,8 +205,6 @@
     #define INTERNAL_LED_RX_PIN    45
 #endif
 #if defined(HELTEC_V3_M0JKS_PBA0060)
-//    #define EXTERNAL_SWITCH_SW2    6
-//    #define EXTERNAL_SWITCH_SW3    7
     #define EXTERNAL_SWITCH_SW4      5
     #define EXTERNAL_BATTERY_ADC_PIN 2    
     #define EXTERNAL_SOLAR_ADC_PIN   3

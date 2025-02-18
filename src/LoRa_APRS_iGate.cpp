@@ -159,13 +159,14 @@ void loop() {
 #ifdef EXTERNAL_BATTERY_ADC_PIN
     if (!toggle) { Utils::setExtBatteryCurrent(BATTERY_Utils::rdExtBatteryCurrent_mA()); }
 #endif
-   
+  
     Utils::checkDisplayInterval();
-#ifdef EXTERNAL_SWITCH_SW4
+#if defined(EXTERNAL_SWITCH_SW4)
     Utils::checkBeaconInterval((digitalRead(EXTERNAL_SWITCH_SW4) == HIGH));
 #else
     Utils::checkBeaconInterval(false);
 #endif    
+
     APRS_IS_Utils::checkStatus(); // Need that to update display, maybe split this and send APRSIS status to display func?
 
     String packet = "";

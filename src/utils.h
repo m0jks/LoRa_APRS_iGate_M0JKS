@@ -39,6 +39,6 @@ namespace Utils {
     void  setExtBatteryCurrent(float current); 
     void  setExtSolarCurrent(float current);     
     float getExtBatteryCurrent(void);
-    float getExtSolarCurrent(void);          
+    float getExtSolarCurrent(void);  
 }
 #endif
