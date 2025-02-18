@@ -11,7 +11,7 @@
     "beacon": {
         "latitude": 53.13726,
         "longitude": -1.65158,
-        "comment": "Stanton Moor Test LoRa MPPT digi PBA0063 #3",
+        "comment": "Test LoRa MPPT digi PBA0063",
         "interval": 30,
         "overlay": "L",
         "symbol": "#",
@@ -48,7 +48,7 @@
     },
     "battery": {
         "sendInternalVoltage": true,
-        "monitorInternalVoltage": true,
+        "monitorInternalVoltage": false,
         "internalSleepVoltage": 3.0,
         "sendExternalVoltage": false,
         "externalVoltagePin": 34,
