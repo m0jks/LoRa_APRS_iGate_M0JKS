@@ -18,7 +18,7 @@
     #define RADIO_BUSY_PIN  26      // GPIO26   - SX1278 IRQ ---->DIO0
 #endif
 
-#if defined(HELTEC_V3) || defined(HELTEC_WSL_V3) || defined(HELTEC_WSL_V3_DISPLAY) || defined(HELTEC_WIRELESS_TRACKER) || defined(HELTEC_WS) || defined(HELTEC_WP)
+#if defined(HELTEC_V3) || defined(HELTEC_V3_2) || defined(HELTEC_WSL_V3) || defined(HELTEC_WSL_V3_DISPLAY) || defined(HELTEC_WIRELESS_TRACKER) || defined(HELTEC_WS) || defined(HELTEC_WP)
     #define RADIO_SCLK_PIN  9       // SX1262 SCK
     #define RADIO_MISO_PIN  11      // SX1262 MISO
     #define RADIO_MOSI_PIN  10      // SX1262 MOSI
@@ -155,7 +155,7 @@
     #define OLED_RST    16
 #endif
 
-#if defined(HELTEC_V3)
+#if defined(HELTEC_V3) || defined(HELTEC_V3_2)
     #define OLED_SDA    17
     #define OLED_SCL    18
     #define OLED_RST    21
@@ -187,7 +187,7 @@
     #define BATTERY_PIN         37
     #define ADC_CTRL            21
 #endif
-#if defined(HELTEC_V3) || defined(HELTEC_WSL_V3) || defined(HELTEC_WSL_V3_DISPLAY) || defined(HELTEC_WS)
+#if defined(HELTEC_V3) || (HELTEC_V3_2) || defined(HELTEC_WSL_V3) || defined(HELTEC_WSL_V3_DISPLAY) || defined(HELTEC_WS)
     #define INTERNAL_LED_PIN    35
     #define BATTERY_PIN         1
     #define VEXT_CTRL           36
@@ -199,12 +199,10 @@
     #endif
 #endif
 
-#if defined(HELTEC_V3_M0JKS_PBA0058) || defined(HELTEC_V3_M0JKS_PBA0060)
+#if defined(HELTEC_V3_X_M0JKS_PBA0063)
     #define INTERNAL_LED_HB_PIN    47
     #define INTERNAL_LED_TX_PIN    46
     #define INTERNAL_LED_RX_PIN    45
-#endif
-#if defined(HELTEC_V3_M0JKS_PBA0060)
     #define EXTERNAL_SWITCH_SW4      5
     #define EXTERNAL_BATTERY_ADC_PIN 2    
     #define EXTERNAL_SOLAR_ADC_PIN   3

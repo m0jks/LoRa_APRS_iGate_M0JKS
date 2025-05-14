@@ -174,11 +174,11 @@ namespace POWER_Utils {
         }
 
         #ifdef VEXT_CTRL
-            pinMode(VEXT_CTRL,OUTPUT); // GPS + TFT on HELTEC Wireless_Tracker and only for Oled in HELTEC V3
-            #ifndef HELTEC_WSL_V3
+             pinMode(VEXT_CTRL,OUTPUT); // GPS + TFT on HELTEC Wireless_Tracker and only for Oled in HELTEC V3
+            #if defined(HELTEC_WIRELESS_TRACKER) || defined(HELTEC_V3) 
                 digitalWrite(VEXT_CTRL, HIGH);
             #endif
-            #ifdef HELTEC_WP
+            #if defined(HELTEC_WP) || defined(HELTEC_WS) || defined(HELTEC_V3_2)
                 digitalWrite(VEXT_CTRL, LOW);
             #endif
         #endif
@@ -191,11 +191,11 @@ namespace POWER_Utils {
             Wire.begin(BOARD_I2C_SDA, BOARD_I2C_SCL);
         #endif
 
-        #if defined(HELTEC_V3) || defined(HELTEC_WP) || defined(HELTEC_WSL_V3) || defined(HELTEC_WSL_V3_DISPLAY)
+        #if defined(HELTEC_V3)  || defined(HELTEC_V3_2) || defined(HELTEC_WP) || defined(HELTEC_WSL_V3) || defined(HELTEC_WSL_V3_DISPLAY)
             Wire1.begin(BOARD_I2C_SDA, BOARD_I2C_SCL);
         #endif
 
-        #if defined(HELTEC_V3) || defined(HELTEC_WS)
+        #if defined(HELTEC_V3) || defined(HELTEC_V3_2) || defined(HELTEC_WS)
             Wire.begin(OLED_SDA, OLED_SCL);
         #endif
         
